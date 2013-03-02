@@ -1201,7 +1201,7 @@ abstract class Kohana_ORM_Nested_Sets extends ORM{
      *
      * @return mixed
      */
-    private function and_scope($object, $scope = NULL)
+    protected function and_scope($object, $scope = NULL)
     {
         if ($this->use_scope)
         {
