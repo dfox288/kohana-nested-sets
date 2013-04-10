@@ -253,6 +253,32 @@ abstract class Kohana_ORM_Nested_Sets extends ORM{
     }
 
     /**
+     * Gets reversed ancestors for node
+     *
+     * @param null $depth
+     *
+     * @return mixed   The ancestors of the node or FALSE if the node has no ancestors (this basically means it's a root node).
+     */
+    public function get_ancestors_reversed($depth = null)
+    {
+        /** @var ORM $result **/
+        $result = $this->and_scope(
+            self::factory(self::object_name())
+                ->where($this->left_column, '<', $this->{$this->left_column})
+                ->and_where($this->right_column, '>', $this->{$this->right_column})
+        )->order_by($this->left_column, 'desc');
+
+        if ($depth !== null)
+        {
+            $result->and_where($this->level_column, '>=', $this->{$this->level_column} - $depth);
+        }
+
+        $result = $result->find_all();
+
+        return $result->count() > 0 ? $result : FALSE;
+    }
+
+    /**
      * Gets path to node from root, uses record::toString() method to get node names
      *
      * @param   bool    $include_root Include or not in path root node
